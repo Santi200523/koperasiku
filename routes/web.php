@@ -1,30 +1,26 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SimpananController;
+use App\Http\Controllers\PinjamanController;
+use App\Http\Controllers\AngsuranController;
 
 Route::get('/', function () {
     return redirect()->route('anggota.index');
-})->middleware('auth');
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-    // Modul Anggota
-    Route::resource('anggota', AnggotaController::class);
 });
 
-// Modul Manajemen User (Khusus Admin)
-Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return redirect()->route('anggota.index');
+    })->name('dashboard');
+
+    Route::resource('anggota', AnggotaController::class);
     Route::resource('users', UserController::class);
+    Route::resource('simpanan', SimpananController::class);
+    Route::resource('pinjaman', PinjamanController::class);
+    Route::resource('angsuran', AngsuranController::class);
 });
 
 require __DIR__.'/auth.php';
