@@ -1,67 +1,45 @@
-@extends('layouts.koperasi')
-
-@section('title', 'Data Anggota - KoperasiKu')
+@extends('layouts.app')
+@section('title', 'Data Anggota')
+@section('page-title', 'Data Anggota')
 
 @section('content')
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h3 class="mb-1">Data Anggota</h3>
-            <p class="text-muted mb-0">Kelola informasi dan status keanggotaan KoperasiKu.</p>
-        </div>
-        <a href="{{ route('anggota.create') }}" class="btn btn-primary">
-            + Tambah Anggota
-        </a>
-    </div>
-
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    <div class="card border-0 shadow-sm">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>No.</th>
-                            <th>No. Anggota</th>
-                            <th>Nama</th>
-                            <th>No. HP</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($anggotas ?? [] as $item)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->no_anggota }}</td>
-                            <td>{{ $item->nama }}</td>
-                            <td>{{ $item->no_hp }}</td>
-                            <td>
-                                @if($item->status === 'aktif')
-                                    <span class="badge text-bg-success">Aktif</span>
-                                @else
-                                    <span class="badge text-bg-secondary">Nonaktif</span>
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{ route('anggota.show', $item) }}" class="btn btn-sm btn-info text-white">Detail</a>
-                                <a href="{{ route('anggota.edit', $item) }}" class="btn btn-sm btn-warning">Edit</a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
-                                Belum ada data anggota. Silakan tambahkan anggota baru.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+<div class="card">
+    <div class="card-header">
+        <a href="{{ route('anggota.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Anggota</a>
+        <form method="GET" class="float-right">
+            <div class="input-group">
+                <input name="q" value="{{ request('q') }}" class="form-control" placeholder="Cari nama atau nomor anggota">
+                <div class="input-group-append"><button class="btn btn-secondary"><i class="fas fa-search"></i></button></div>
             </div>
-        </div>
+        </form>
+    </div>
+    <div class="card-body table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr><th>No</th><th>No. Anggota</th><th>Nama</th><th>No. HP</th><th>Status</th><th>Aksi</th></tr>
+            </thead>
+            <tbody>
+            @forelse($anggota as $item)
+                <tr>
+                    <td>{{ $anggota->firstItem() + $loop->index }}</td>
+                    <td>{{ $item->nomor_anggota }}</td>
+                    <td>{{ $item->nama }}</td>
+                    <td>{{ $item->no_telepon ?? '-' }}</td>
+                    <td><span class="badge badge-{{ $item->status === 'Aktif' ? 'success' : 'secondary' }}">{{ $item->status }}</span></td>
+                    <td>
+                        <a href="{{ route('anggota.edit', $item) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form method="POST" action="{{ route('anggota.destroy', $item) }}" class="d-inline" onsubmit="return confirm('Hapus anggota ini?')">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-danger btn-sm">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="6" class="text-center">Belum ada data anggota.</td></tr>
+            @endforelse
+            </tbody>
+        </table>
+        {{ $anggota->links() }}
     </div>
 </div>
 @endsection

@@ -7,66 +7,73 @@ use Illuminate\Http\Request;
 
 class AnggotaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $anggotas = Anggota::latest()->get();
-        return view('anggota.index', compact('anggotas'));
+        $anggota = Anggota::query()
+            ->when($request->q, function ($query, $q) {
+                $query->where('nama', 'like', "%{$q}%")
+                    ->orWhere('nomor_anggota', 'like', "%{$q}%");
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('anggota.index', compact('anggota'));
     }
 
     public function create()
     {
-        return view('anggota.create');
+        return view('anggota.form', ['item' => new Anggota()]);
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'no_anggota'        => 'required|unique:anggotas,no_anggota',
-            'nik'               => 'required|digits:16|unique:anggotas,nik',
-            'nama'              => 'required|string|max:255',
-            'jenis_kelamin'     => 'required|in:L,P',
-            'no_hp'             => 'required|string|max:20',
-            'alamat'            => 'required|string',
-            'tanggal_bergabung' => 'required|date',
-            'status'            => 'required|in:aktif,nonaktif',
+        $data = $request->validate([
+            'nomor_anggota' => 'required|string|max:50|unique:anggotas,nomor_anggota',
+            'nama' => 'required|string|max:255',
+            'nik' => 'nullable|string|max:30',
+            'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
+            'alamat' => 'nullable|string',
+            'no_telepon' => 'nullable|string|max:30',
+            'tanggal_daftar' => 'nullable|date',
+            'status' => 'required|in:Aktif,Nonaktif',
         ]);
 
-        Anggota::create($validated);
+        Anggota::create($data);
 
-        return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil ditambahkan!');
-    }
-
-    public function show(Anggota $anggota)
-    {
-        return view('anggota.show', compact('anggota'));
+        return redirect()->route('anggota.index')
+            ->with('success', 'Anggota berhasil ditambahkan.');
     }
 
     public function edit(Anggota $anggota)
     {
-        return view('anggota.edit', compact('anggota'));
+        return view('anggota.form', ['item' => $anggota]);
     }
 
     public function update(Request $request, Anggota $anggota)
     {
-        $validated = $request->validate([
-            'no_anggota'        => 'required|unique:anggotas,no_anggota,' . $anggota->id,
-            'nik'               => 'required|digits:16|unique:anggotas,nik,' . $anggota->id,
-            'nama'              => 'required|string|max:255',
-            'jenis_kelamin'     => 'required|in:L,P',
-            'no_hp'             => 'required|string|max:20',
-            'alamat'            => 'required|string',
-            'tanggal_bergabung' => 'required|date',
-            'status'            => 'required|in:aktif,nonaktif',
+        $data = $request->validate([
+            'nomor_anggota' => 'required|string|max:50|unique:anggotas,nomor_anggota,' . $anggota->id,
+            'nama' => 'required|string|max:255',
+            'nik' => 'nullable|string|max:30',
+            'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
+            'alamat' => 'nullable|string',
+            'no_telepon' => 'nullable|string|max:30',
+            'tanggal_daftar' => 'nullable|date',
+            'status' => 'required|in:Aktif,Nonaktif',
         ]);
 
-        $anggota->update($validated);
+        $anggota->update($data);
 
-        return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil diperbarui!');
+        return redirect()->route('anggota.index')
+            ->with('success', 'Data anggota berhasil diperbarui.');
     }
 
     public function destroy(Anggota $anggota)
     {
         $anggota->delete();
-        return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil dihapus!');
+
+        return redirect()->route('anggota.index')
+            ->with('success', 'Anggota berhasil dihapus.');
     }
 }

@@ -1,26 +1,27 @@
-<?php
+﻿<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
-        Schema::create('pinjamans', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('anggota_id')->constrained('anggotas')->onDelete('cascade');
-            $table->decimal('jumlah', 15, 2);
-            $table->decimal('bunga', 5, 2)->default(0);
-            $table->integer('tenor'); // dalam bulan
-            $table->enum('status', ['pengajuan', 'disetujui', 'ditolak', 'lunas'])->default('disetujui');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('pinjamans')) {
+            Schema::create('pinjamans', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('anggota_id');
+                $table->decimal('jumlah', 15, 2);
+                $table->decimal('bunga', 5, 2)->default(0);
+                $table->unsignedInteger('tenor');
+                $table->enum('status', ['pengajuan', 'disetujui', 'ditolak', 'lunas'])->default('pengajuan');
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('pinjamans');
+        // Tabel tidak dihapus agar data lama tetap aman.
     }
 };

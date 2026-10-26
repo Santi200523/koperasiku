@@ -14,8 +14,8 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label">No. Anggota</label>
-                        <input type="text" name="no_anggota" class="form-control @error('no_anggota') is-invalid @enderror" value="{{ old('no_anggota') }}" required>
-                        @error('no_anggota')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <input type="text" name="nomor_anggota" class="form-control @error('nomor_anggota') is-invalid @enderror" value="{{ old('nomor_anggota') }}" required>
+                        @error('nomor_anggota')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">NIK</label>
@@ -38,7 +38,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">No. HP</label>
-                        <input type="text" name="no_hp" class="form-control @error('no_hp') is-invalid @enderror" value="{{ old('no_hp') }}" required>
+                        <input type="text" name="no_telepon" class="form-control @error('no_hp') is-invalid @enderror" value="{{ old('no_hp') }}" required>
                         @error('no_hp')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-12">
@@ -48,7 +48,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Tanggal Bergabung</label>
-                        <input type="date" name="tanggal_bergabung" class="form-control @error('tanggal_bergabung') is-invalid @enderror" value="{{ old('tanggal_bergabung', date('Y-m-d')) }}" required>
+                        <input type="date" name="tanggal_daftar" class="form-control @error('tanggal_bergabung') is-invalid @enderror" value="{{ old('tanggal_bergabung', date('Y-m-d')) }}" required>
                         @error('tanggal_bergabung')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="col-md-6">
@@ -68,3 +68,4 @@
     </div>
 </div>
 @endsection
+

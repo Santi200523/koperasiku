@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Anggota extends Model
 {
@@ -17,10 +18,8 @@ class Anggota extends Model
         'status',
     ];
 
-    protected function casts(): array
+    public function simpanans(): HasMany
     {
-        return [
-            'tanggal_daftar' => 'date',
-        ];
+        return $this->hasMany(Simpanan::class);
     }
 }

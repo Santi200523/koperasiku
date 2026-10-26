@@ -22,3 +22,10 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# File cadangan lokal
+*.backup
+*.backup2
+*.bak
+backup-koperasiku/
+backup-perbaikan-*/
